@@ -3,7 +3,6 @@ export class Constants {
     endYear = 2050;
     initialOwedOnHouse = 500000;
     inflationRateBase = 0.03;
-    inflationRateVariation = 0.005;
     loanInterestRateBase = 0.035;
     loanRepaymentYears = 30;
     loanBasePayments = 2500;
@@ -49,7 +48,7 @@ export class FinancialSim {
 
     simulateMonth() {
         //the current inflation rate - varies slightly month to month. The average should be close to the base rate, but the inflationRateVariation adds some randomness.
-        const runningInflationRateThisMonth = this.constants.inflationRateBase + (Math.random() * 2 - 1) * this.constants.inflationRateVariation;
+        const runningInflationRateThisMonth = this.constants.inflationRateBase
 
         //update running inflation multiplier; compounds monthly. 
         this.runningInflation *= (1 + runningInflationRateThisMonth / 12);
@@ -57,6 +56,7 @@ export class FinancialSim {
 
         // If we've paid off the house loan, then we *only* get income.
         if (this.runningLoanPrincipal <= 0) {
+            this.runningEquity = this.runningHouseValue;
             const monthlyIncome = this.constants.incomeMonthlyBase * (1 + this.constants.incomeYearlyGrowthRate) ** (this.runningYear - this.constants.startYear);
             this.runningSavings += monthlyIncome;
             this.runningSavings -= this.constants.monthlyExpenses * this.runningInflation; //expenses scale with inflation
